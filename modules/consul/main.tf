@@ -18,3 +18,19 @@ resource "helm_release" "consul" {
     })
   ]
 }
+
+resource "kubernetes_manifest" "ambassador_mapping_consul" {
+  manifest = {
+    "apiVersion" = "getambassador.io/v2"
+    "kind"       = "Mapping"
+    "metadata" = {
+      "name"      = "consul"
+      "namespace" = "default"
+    }
+    "spec" = {
+      "prefix"  = "/consul/"
+      "rewrite" = "/consul/"
+      "service" = "consul-consul-server:8500"
+    }
+  }
+}

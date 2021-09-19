@@ -107,8 +107,8 @@ resource "kubernetes_manifest" "mapping_quote_backend" {
       "namespace" = "default"
     }
     "spec" = {
-      "host"    = "quotes.cddc39.tech"
-      "prefix"  = "/backend/"
+      # "host"    = "quotes.cddc39.tech"
+      "prefix"  = "/quote"
       "service" = "quote"
     }
   }
