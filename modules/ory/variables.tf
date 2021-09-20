@@ -5,3 +5,8 @@ variable "kube_config" {
     token                  = string,
   })
 }
+
+variable "postgresql_conf" {
+default = {}
+type = any
+}
