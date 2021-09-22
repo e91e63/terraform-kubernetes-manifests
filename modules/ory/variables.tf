@@ -7,6 +7,6 @@ variable "kube_config" {
 }
 
 variable "postgresql_conf" {
-default = {}
-type = any
+  default = {}
+  type    = any
 }

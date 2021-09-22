@@ -4,6 +4,11 @@ resource "helm_release" "ambassador" {
   name       = "ambassador"
   repository = "https://getambassador.io"
   version    = "v6.9.1"
+
+  set {
+    name  = "authService.create"
+    value = false
+  }
 }
 
 resource "kubernetes_manifest" "consulresolver" {
@@ -113,3 +118,51 @@ resource "kubernetes_manifest" "mapping_quote_backend" {
     }
   }
 }
+
+# Some alternative auth services include UAA and Dex
+# resource "kubernetes_manifest" "filter_google" {
+#   manifest = {
+#     "apiVersion" = "getambassador.io/v2"
+#     "kind"       = "Filter"
+#     "metadata" = {
+#       "name"      = "google"
+#       "namespace" = "default"
+#     }
+#     "spec" = {
+#       "OAuth2" = {
+#         "authorizationURL" = "https://accounts.google.com"
+#         "clientID"         = var.google_oauth.client_id
+#         "protectedOrigins" = [
+#           {
+#             "origin" = "https://e91e63.tech"
+#           },
+#         ]
+#         "secret" = var.google_oauth.client_secret
+#       }
+#     }
+#   }
+# }
+
+# resource "kubernetes_manifest" "filterpolicy_google_policy" {
+#   manifest = {
+#     "apiVersion" = "getambassador.io/v2"
+#     "kind"       = "FilterPolicy"
+#     "metadata" = {
+#       "name"      = "google-policy"
+#       "namespace" = "default"
+#     }
+#     "spec" = {
+#       "rules" = [
+#         {
+#           "filters" = [
+#             {
+#               "name" = "google"
+#             },
+#           ]
+#           "host" = "*"
+#           "path" = "/quote"
+#         },
+#       ]
+#     }
+#   }
+# }
