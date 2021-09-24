@@ -22,8 +22,8 @@ resource "kubernetes_deployment" "quote" {
       }
       spec {
         container {
-          image = "docker.io/datawire/quote:0.5.0"
-          name  = "backend"
+          image = var.quote_conf.image
+          name  = "quote"
           port {
             container_port = 8080
             name           = "http"

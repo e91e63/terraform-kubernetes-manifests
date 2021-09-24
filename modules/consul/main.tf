@@ -2,7 +2,7 @@ resource "helm_release" "consul" {
   chart      = "consul"
   name       = "consul"
   repository = "https://helm.releases.hashicorp.com"
-  version    = "v0.33.0"
+  version    = var.consul_conf.version
 
   values = [
     jsonencode({

@@ -3,7 +3,7 @@ resource "helm_release" "ambassador" {
   chart      = "ambassador"
   name       = "ambassador"
   repository = "https://getambassador.io"
-  version    = "v6.9.1"
+  version    = var.ambassador_conf.version
 
   set {
     name  = "authService.create"
