@@ -1,6 +1,13 @@
+module "subdomain" {
+  source = "../../../terraform-digitalocean-networking/modules/subdomain"
+
+  k8s_conf       = var.k8s_conf
+  subdomain_conf = var.quote_conf
+}
+
 resource "kubernetes_deployment" "quote" {
   metadata {
-    name      = "quote"
+    name      = var.quote_conf.name
     namespace = "default"
   }
 
@@ -8,7 +15,7 @@ resource "kubernetes_deployment" "quote" {
     replicas = 1
     selector {
       match_labels = {
-        app = "quote"
+        app = var.quote_conf.name
       }
     }
     strategy {
@@ -17,13 +24,13 @@ resource "kubernetes_deployment" "quote" {
     template {
       metadata {
         labels = {
-          app = "quote"
+          app = var.quote_conf.name
         }
       }
       spec {
         container {
           image = var.quote_conf.image
-          name  = "quote"
+          name  = var.quote_conf.name
           port {
             container_port = 8080
             name           = "http"
@@ -48,7 +55,7 @@ resource "kubernetes_service" "quote" {
       "a8r.io/runbook"       = "https://github.com/datawire/quote/blob/master/README.md"
       "a8r.io/support"       = "http://a8r.io/Slack"
     }
-    name      = "quote"
+    name      = var.quote_conf.name
     namespace = "default"
   }
 
@@ -59,23 +66,22 @@ resource "kubernetes_service" "quote" {
       target_port = 8080
     }
     selector = {
-      app = "quote"
+      app = var.quote_conf.name
     }
   }
 }
 
 resource "kubernetes_manifest" "ambassador_mapping" {
   manifest = {
-    "apiVersion" = "getambassador.io/v2"
-    "kind"       = "Mapping"
-    "metadata" = {
-      "name"      = "quote"
-      "namespace" = "default"
+    apiVersion = "getambassador.io/v2"
+    kind       = "Mapping"
+    metadata = {
+      name      = var.quote_conf.name
+      namespace = "default"
     }
-    "spec" = {
-      # "host"    = "quote.cddc39.tech"
-      "prefix"  = "/quote"
-      "service" = "quote"
+    spec = {
+      prefix  = "/quote"
+      service = var.quote_conf.name
     }
   }
 }

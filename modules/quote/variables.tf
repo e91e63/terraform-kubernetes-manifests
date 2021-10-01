@@ -8,6 +8,9 @@ variable "k8s_conf" {
 
 variable "quote_conf" {
   type = object({
-    image = string
+    domain_name = string
+    email       = string
+    image       = string
+    name        = string
   })
 }
