@@ -1,10 +1,3 @@
-module "subdomain" {
-  source = "../../../terraform-digitalocean-networking/modules/subdomain"
-
-  k8s_conf       = var.k8s_conf
-  subdomain_conf = var.quote_conf
-}
-
 resource "kubernetes_deployment" "quote" {
   metadata {
     name      = var.quote_conf.name
@@ -41,6 +34,42 @@ resource "kubernetes_deployment" "quote" {
   }
 }
 
+resource "kubernetes_manifest" "traefik_ingress_route" {
+  manifest = {
+    "apiVersion" = "traefik.containo.us/v1alpha1"
+    "kind"       = "IngressRoute"
+    "metadata" = {
+      "name"      = var.quote_conf.name
+      "namespace" = "default"
+    }
+    "spec" = {
+      entryPoints = [
+        "websecure",
+      ]
+      routes = [
+        {
+          match = "Host(`${var.quote_conf.name}.e91e63.tech`)"
+          kind  = "Rule"
+          middlewares = [
+            {
+              name = "admin-users"
+            }
+          ]
+          services = [
+            {
+              name = var.quote_conf.name
+              port = 80
+            }
+          ]
+        }
+      ]
+      tls = {
+        secretName = "e91e63.tech-cert"
+      }
+    }
+  }
+}
+
 resource "kubernetes_service" "quote" {
   metadata {
     annotations = {
@@ -67,21 +96,6 @@ resource "kubernetes_service" "quote" {
     }
     selector = {
       app = var.quote_conf.name
-    }
-  }
-}
-
-resource "kubernetes_manifest" "ambassador_mapping" {
-  manifest = {
-    apiVersion = "getambassador.io/v2"
-    kind       = "Mapping"
-    metadata = {
-      name      = var.quote_conf.name
-      namespace = "default"
-    }
-    spec = {
-      prefix  = "/quote"
-      service = var.quote_conf.name
     }
   }
 }

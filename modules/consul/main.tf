@@ -7,10 +7,45 @@ resource "helm_release" "consul" {
   values = [
     jsonencode({
       connectInject = {
+        default = false
+        enabled = true
+      }
+      controller = {
+        enabled = true
+      }
+      global = {
+        name       = "consul"
+        datacenter = "dc1"
+        metrics = {
+          enabled = true
+        }
+        # tls = {
+        #   # acls = {
+        #   #   manageSystemACLs = true
+        #   # }
+        #   enabled           = true
+        #   enableAutoEncrypt = true
+        #   # gossipEncryption = {
+        #   #   secretName = "consul-gossip-encryption-key"
+        #   #   secretKey  = "key"
+        #   # }
+        #   verify = true
+        #   serverAdditionalDNSSANs = [
+        #     "consul-server.default.svc.cluster.local"
+        #   ]
+        # }
+      }
+      grafana = {
+        enabled = true
+      }
+      prometheus = {
         enabled = true
       }
       syncCatalog = {
-        enabled = true
+        default  = false
+        enabled  = true
+        toConsul = true
+        toK8S    = false
       },
       ui = {
         enabled = true
@@ -19,32 +54,38 @@ resource "helm_release" "consul" {
   ]
 }
 
-resource "kubernetes_manifest" "ambassador_mapping" {
+resource "kubernetes_manifest" "traefik_ingress_route" {
   manifest = {
-    "apiVersion" = "getambassador.io/v2"
-    "kind"       = "Mapping"
+    "apiVersion" = "traefik.containo.us/v1alpha1"
+    "kind"       = "IngressRoute"
     "metadata" = {
       "name"      = "consul"
       "namespace" = "default"
     }
     "spec" = {
-      "prefix"  = "/consul/"
-      "rewrite" = "/consul/"
-      "service" = "consul-consul-server:8500"
-    }
-  }
-}
-
-resource "kubernetes_manifest" "ambassador_consul_resolver" {
-  manifest = {
-    "apiVersion" = "getambassador.io/v2"
-    "kind"       = "ConsulResolver"
-    "metadata" = {
-      "name"      = "consul"
-      "namespace" = "default"
-    }
-    "spec" = {
-      "address" = "consul:8500"
+      entryPoints = [
+        "websecure",
+      ]
+      routes = [
+        {
+          match = "Host(`consul.e91e63.tech`)"
+          kind  = "Rule"
+          middlewares = [
+            {
+              name = "admin-users"
+            }
+          ]
+          services = [
+            {
+              name = "consul-ui"
+              port = 80
+            }
+          ]
+        }
+      ]
+      tls = {
+        secretName = "e91e63.tech-cert"
+      }
     }
   }
 }
