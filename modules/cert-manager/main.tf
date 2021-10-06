@@ -56,25 +56,3 @@ resource "kubernetes_manifest" "cert_manager_issuer_digitalocean" {
     }
   }
 }
-
-resource "kubernetes_manifest" "cert_manager_certificate" {
-  manifest = {
-    apiVersion = "cert-manager.io/v1"
-    kind       = "Certificate"
-    metadata = {
-      name      = "e91e63.tech"
-      namespace = "default"
-    }
-    spec = {
-      dnsNames = [
-        "e91e63.tech",
-        "*.e91e63.tech",
-      ]
-      issuerRef = {
-        name = "digitalocean"
-        kind = "ClusterIssuer"
-      }
-      secretName = "e91e63.tech-cert"
-    }
-  }
-}
