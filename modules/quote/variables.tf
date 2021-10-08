@@ -1,4 +1,4 @@
-variable "k8s_conf" {
+variable "k8s_info" {
   type = object({
     cluster_ca_certificate = string,
     host                   = string,
@@ -9,7 +9,6 @@ variable "k8s_conf" {
 variable "quote_conf" {
   type = object({
     domain_name = string
-    email       = string
     image       = string
     name        = string
   })
