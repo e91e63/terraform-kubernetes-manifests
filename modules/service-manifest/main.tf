@@ -1,3 +1,10 @@
+module "traefik_ingress_route" {
+  source = "../traefik-ingress-route/"
+
+  domain_info = var.domain_info
+  route_conf  = var.service_conf
+}
+
 resource "kubernetes_deployment" "main" {
   metadata {
     name      = var.service_conf.name
@@ -29,42 +36,6 @@ resource "kubernetes_deployment" "main" {
             name           = "http"
           }
         }
-      }
-    }
-  }
-}
-
-resource "kubernetes_manifest" "traefik_ingress_route" {
-  manifest = {
-    "apiVersion" = "traefik.containo.us/v1alpha1"
-    "kind"       = "IngressRoute"
-    "metadata" = {
-      "name"      = var.service_conf.name
-      "namespace" = "default"
-    }
-    "spec" = {
-      entryPoints = [
-        "websecure",
-      ]
-      routes = [
-        {
-          match = "Host(`${var.service_conf.name}.${var.domain_info.name}`)"
-          kind  = "Rule"
-          middlewares = [
-            {
-              name = "admin-users"
-            }
-          ]
-          services = [
-            {
-              name = var.service_conf.name
-              port = 80
-            }
-          ]
-        }
-      ]
-      tls = {
-        secretName = var.domain_info.tls_secret_name
       }
     }
   }

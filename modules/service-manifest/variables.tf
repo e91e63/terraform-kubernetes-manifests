@@ -1,15 +1,6 @@
 variable "domain_info" {
-  type = object({
-    name            = string
-    tls_secret_name = string
-  })
-}
-variable "k8s_info" {
-  type = object({
-    cluster_ca_certificate = string,
-    host                   = string,
-    token                  = string,
-  })
+  default = {}
+  type    = any
 }
 
 variable "service_conf" {
