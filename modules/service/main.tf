@@ -1,7 +1,19 @@
+locals {
+  service_port = 80
+}
+
 module "traefik_ingress_route" {
+  count  = var.route_conf.active ? 1 : 0
   source = "../traefik-ingress-route/"
 
-  domain_info  = var.domain_info
+  domain_info = var.domain_info
+  route_conf = merge(
+    var.route_conf,
+    {
+      service_name = kubernetes_deployment.main.metadata[0].name
+      service_port = local.service_port
+    }
+  )
   service_conf = var.service_conf
 }
 
@@ -56,7 +68,7 @@ resource "kubernetes_service" "main" {
   spec {
     port {
       name        = "http"
-      port        = 80
+      port        = local.service_port
       target_port = var.service_conf.container_port
     }
     selector = {

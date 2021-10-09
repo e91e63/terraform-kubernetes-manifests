@@ -1,8 +1,16 @@
 module "traefik_ingress_route" {
+  count  = var.route_conf.active ? 1 : 0
   source = "../traefik-ingress-route/"
 
   domain_info = var.domain_info
-  route_conf  = var.helm_conf
+  route_conf = defaults(
+    var.route_conf,
+    {
+      service_name = var.helm_conf.name
+      service_port = 80
+    }
+  )
+  service_conf = var.helm_conf
 }
 
 resource "helm_release" "main" {

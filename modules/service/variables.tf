@@ -7,7 +7,18 @@ variable "service_conf" {
   type = object({
     container_port = string
     image          = string
-    middlewares    = list(any)
     name           = string
+  })
+}
+
+
+variable "route_conf" {
+  default = {
+    active      = false
+    middlewares = []
+  }
+  type = object({
+    active      = bool
+    middlewares = any
   })
 }

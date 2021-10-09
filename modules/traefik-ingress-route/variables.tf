@@ -5,12 +5,20 @@ variable "domain_info" {
   })
 }
 
-variable "service_conf" {
+variable "route_conf" {
   type = object({
     middlewares = list(object({
       name      = string
       namespace = string
     }))
+    service_kind = optional(string)
+    service_name = string
+    service_port = number
+  })
+}
+
+variable "service_conf" {
+  type = object({
     name = string
   })
 }

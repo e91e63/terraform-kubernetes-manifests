@@ -17,11 +17,12 @@ resource "kubernetes_manifest" "main" {
         {
           match       = "Host(`${var.service_conf.name}.${var.domain_info.name}`)"
           kind        = "Rule"
-          middlewares = var.service_conf.middlewares
+          middlewares = var.route_conf.middlewares
           services = [
             {
-              name = var.service_conf.name
-              port = 80
+              name = var.route_conf.service_name
+              kind = var.route_conf.service_kind
+              port = var.route_conf.service_port
             }
           ]
         }
