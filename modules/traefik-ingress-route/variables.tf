@@ -7,6 +7,9 @@ variable "domain_info" {
 
 variable "route_conf" {
   type = object({
+    middlewares = list(object({
+      name = string
+    }))
     name = string
   })
 }

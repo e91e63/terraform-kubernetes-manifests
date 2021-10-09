@@ -15,7 +15,7 @@ resource "kubernetes_deployment" "main" {
     replicas = 1
     selector {
       match_labels = {
-        app = var.service_conf.name
+        "app.kubernetes.io/name" = var.service_conf.name
       }
     }
     strategy {
@@ -24,7 +24,7 @@ resource "kubernetes_deployment" "main" {
     template {
       metadata {
         labels = {
-          app = var.service_conf.name
+          "app.kubernetes.io/name" = var.service_conf.name
         }
       }
       spec {
@@ -54,7 +54,7 @@ resource "kubernetes_service" "main" {
       target_port = var.service_conf.container_port
     }
     selector = {
-      app = var.service_conf.name
+      "app.kubernetes.io/name" = var.service_conf.name
     }
   }
 }

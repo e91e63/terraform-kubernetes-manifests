@@ -7,9 +7,9 @@ variable "domain_info" {
 
 variable "helm_conf" {
   type = object({
-    chart        = string
-    cart_version = string
-    name         = string
-    repository   = string
+    chart         = string
+    chart_version = string
+    name          = string
+    repository    = string
   })
 }
