@@ -1,12 +1,15 @@
 module "traefik_ingress_route" {
   source = "../traefik-ingress-route/"
 
-  domain_info = var.domain_info
-  route_conf  = var.service_conf
+  domain_info  = var.domain_info
+  service_conf = var.service_conf
 }
 
 resource "kubernetes_deployment" "main" {
   metadata {
+    labels = {
+      "app.kubernetes.io/name" = var.service_conf.name
+    }
     name      = var.service_conf.name
     namespace = "default"
   }
@@ -43,6 +46,9 @@ resource "kubernetes_deployment" "main" {
 
 resource "kubernetes_service" "main" {
   metadata {
+    labels = {
+      "app.kubernetes.io/name" = var.service_conf.name
+    }
     name      = var.service_conf.name
     namespace = "default"
   }

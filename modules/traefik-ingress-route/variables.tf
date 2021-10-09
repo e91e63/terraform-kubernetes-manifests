@@ -5,10 +5,11 @@ variable "domain_info" {
   })
 }
 
-variable "route_conf" {
+variable "service_conf" {
   type = object({
     middlewares = list(object({
-      name = string
+      name      = string
+      namespace = string
     }))
     name = string
   })
