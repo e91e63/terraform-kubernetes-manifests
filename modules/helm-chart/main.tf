@@ -16,6 +16,7 @@ module "traefik_ingress_route" {
 resource "helm_release" "main" {
   chart      = var.helm_conf.chart
   name       = var.helm_conf.name
+  namespace  = var.helm_conf.namespace
   repository = var.helm_conf.repository
   version    = var.helm_conf.chart_version
 

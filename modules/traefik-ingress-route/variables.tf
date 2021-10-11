@@ -19,6 +19,7 @@ variable "route_conf" {
 
 variable "service_conf" {
   type = object({
-    name = string
+    name      = string
+    namespace = optional(string)
   })
 }

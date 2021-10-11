@@ -7,7 +7,7 @@ resource "kubernetes_manifest" "main" {
         "app.kubernetes.io/name" = var.service_conf.name
       }
       "name"      = var.service_conf.name
-      "namespace" = "default"
+      "namespace" = var.service_conf.namespace
     }
     "spec" = {
       entryPoints = [

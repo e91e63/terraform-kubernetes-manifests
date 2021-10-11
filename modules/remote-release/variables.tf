@@ -5,14 +5,10 @@ variable "domain_info" {
   })
 }
 
-variable "helm_conf" {
+variable "release_conf" {
   type = object({
-    chart         = string
-    chart_version = string
-    name          = string
-    namespace     = string
-    repository    = string
-    values        = any
+    name = string
+    url  = string
   })
 }
 
@@ -20,12 +16,13 @@ variable "route_conf" {
   default = {
     active       = false
     middlewares  = []
-    service_port = -1
+    service_name = ""
+    service_port = ""
   }
   type = object({
     active       = bool
     middlewares  = any
-    service_name = optional(string)
-    service_port = optional(number)
+    service_name = string
+    service_port = string
   })
 }

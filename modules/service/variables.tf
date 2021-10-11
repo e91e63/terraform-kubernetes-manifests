@@ -11,7 +11,6 @@ variable "service_conf" {
   })
 }
 
-
 variable "route_conf" {
   default = {
     active      = false
