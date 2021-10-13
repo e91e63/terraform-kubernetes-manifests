@@ -8,15 +8,35 @@ module "traefik_ingress_route" {
 }
 
 data "http" "main" {
-  url = var.release_conf.url
+  count = length(var.release_conf.urls)
+
+  url = var.release_conf.urls[count.index]
 }
 
 data "kubectl_file_documents" "main" {
-  content = data.http.main.body
+  count = length(data.http.main)
+
+  content = data.http.main[count.index].body
 }
 
-resource "kubectl_manifest" "test" {
-  count     = length(data.kubectl_file_documents.main.documents)
+locals {
+  # TODO: filter out namespaces and run those first
+  flat_documents     = flatten(data.kubectl_file_documents.main[*].documents)
+  namespace_document = slice(local.flat_documents, 0, 1)[0]
+  documents          = slice(local.flat_documents, 1, length(local.flat_documents))
+}
+
+resource "kubectl_manifest" "namespace" {
   wait      = true
-  yaml_body = element(data.kubectl_file_documents.main.documents, count.index)
+  yaml_body = local.namespace_document
+}
+
+resource "kubectl_manifest" "main" {
+  count = length(local.documents)
+  depends_on = [
+    kubectl_manifest.namespace
+  ]
+
+  wait      = true
+  yaml_body = local.documents[count.index]
 }

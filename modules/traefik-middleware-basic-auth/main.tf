@@ -9,7 +9,8 @@ resource "kubernetes_manifest" "traefik_middleware" {
     }
     spec = {
       basicAuth = {
-        secret = kubernetes_secret.users.metadata[0].name
+        removeHeader = true
+        secret       = kubernetes_secret.users.metadata[0].name
       }
     }
   }

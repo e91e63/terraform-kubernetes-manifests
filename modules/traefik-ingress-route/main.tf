@@ -1,15 +1,15 @@
 resource "kubernetes_manifest" "main" {
   manifest = {
-    "apiVersion" = "traefik.containo.us/v1alpha1"
-    "kind"       = "IngressRoute"
-    "metadata" = {
+    apiVersion = "traefik.containo.us/v1alpha1"
+    kind       = "IngressRoute"
+    metadata = {
       labels = {
         "app.kubernetes.io/name" = var.service_conf.name
       }
-      "name"      = var.service_conf.name
-      "namespace" = var.service_conf.namespace
+      name      = var.service_conf.name
+      namespace = "default"
     }
-    "spec" = {
+    spec = {
       entryPoints = [
         "websecure",
       ]
@@ -20,9 +20,10 @@ resource "kubernetes_manifest" "main" {
           middlewares = var.route_conf.middlewares
           services = [
             {
-              name = var.route_conf.service_name
-              kind = var.route_conf.service_kind
-              port = var.route_conf.service_port
+              name      = var.route_conf.service_name
+              namespace = var.service_conf.namespace
+              kind      = var.route_conf.service_kind
+              port      = var.route_conf.service_port
             }
           ]
         }

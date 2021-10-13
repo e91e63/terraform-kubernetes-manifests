@@ -7,8 +7,9 @@ variable "domain_info" {
 
 variable "release_conf" {
   type = object({
-    name = string
-    url  = string
+    name      = string
+    namespace = string
+    urls      = list(string)
   })
 }
 
