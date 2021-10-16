@@ -1,8 +1,10 @@
 locals {
+  route_conf = defaults(var.route_conf, {
+    service_kind = "Service",
+  })
   service_conf = defaults(var.service_conf, {
-     namespace = "default",
-     service_kind = "Service",
-     })
+    namespace = "default",
+  })
 }
 
 resource "kubernetes_manifest" "main" {
