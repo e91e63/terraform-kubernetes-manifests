@@ -1,12 +1,16 @@
+locals {
+  service_conf = defaults(var.service_conf, { namespace = "default" })
+}
+
 resource "kubernetes_manifest" "main" {
   manifest = {
     apiVersion = "traefik.containo.us/v1alpha1"
     kind       = "IngressRoute"
     metadata = {
       labels = {
-        "app.kubernetes.io/name" = var.service_conf.name
+        "app.kubernetes.io/name" = local.service_conf.name
       }
-      name      = var.service_conf.name
+      name      = local.service_conf.name
       namespace = "default"
     }
     spec = {
@@ -21,7 +25,7 @@ resource "kubernetes_manifest" "main" {
           services = [
             {
               name      = var.route_conf.service_name
-              namespace = var.service_conf.namespace
+              namespace = local.service_conf.namespace
               kind      = var.route_conf.service_kind
               port      = var.route_conf.service_port
             }

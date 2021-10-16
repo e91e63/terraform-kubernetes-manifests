@@ -14,7 +14,7 @@ variable "helm_conf" {
     chart         = string
     chart_version = string
     name          = string
-    namespace     = string
+    namespace     = optional(string)
     repository    = string
     values        = any
   })
