@@ -1,4 +1,8 @@
 variable "domain_info" {
+  default = {
+    name            = null
+    tls_secret_name = null
+  }
   type = object({
     name            = string
     tls_secret_name = string
