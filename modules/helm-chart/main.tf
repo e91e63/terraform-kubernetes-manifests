@@ -19,6 +19,7 @@ resource "helm_release" "main" {
   namespace  = var.helm_conf.namespace
   repository = var.helm_conf.repository
   version    = var.helm_conf.chart_version
+  wait       = true
 
   values = [
     jsonencode(var.helm_conf.values)
