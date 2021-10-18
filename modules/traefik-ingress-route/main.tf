@@ -24,15 +24,15 @@ resource "kubernetes_manifest" "main" {
       ]
       routes = [
         {
-          match       = "Host(`${var.service_conf.name}.${var.domain_info.name}`)"
+          match       = "Host(`${local.service_conf.name}.${var.domain_info.name}`)"
           kind        = "Rule"
-          middlewares = var.route_conf.middlewares
+          middlewares = local.route_conf.middlewares
           services = [
             {
-              name      = var.route_conf.service_name
+              name      = local.route_conf.service_name
               namespace = local.service_conf.namespace
-              kind      = var.route_conf.service_kind
-              port      = var.route_conf.service_port
+              kind      = local.route_conf.service_kind
+              port      = local.route_conf.service_port
             }
           ]
         }
