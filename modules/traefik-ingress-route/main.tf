@@ -13,7 +13,7 @@ resource "kubernetes_manifest" "main" {
     kind       = "IngressRoute"
     metadata = {
       labels = {
-        app.kubernetes.io/name = local.service_conf.name
+        "app.kubernetes.io/names" = local.service_conf.name
       }
       name      = local.service_conf.name
       namespace = "default"
