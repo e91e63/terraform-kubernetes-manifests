@@ -2,11 +2,11 @@ terraform {
   required_providers {
     http = {
       source  = "hashicorp/http"
-      version = "2.1.0"
+      version = "~> 2"
     }
     kubectl = {
       source  = "gavinbunney/kubectl"
-      version = "1.12.1"
+      version = "~> 1"
     }
   }
 }
