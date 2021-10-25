@@ -11,6 +11,7 @@ variable "route_conf" {
       name      = string
       namespace = string
     }))
+    path         = optional(string)
     service_kind = optional(string)
     service_name = string
     service_port = number
