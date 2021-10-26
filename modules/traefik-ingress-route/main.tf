@@ -5,7 +5,7 @@ locals {
   service_conf = defaults(var.service_conf, {
     namespace = "default"
   })
-  route_path = local.route_conf.path != null ? " && Path(`/${local.route_conf.path}" : ""
+  route_path = local.route_conf.path != null ? " && Path(`/${local.route_conf.path}`)" : ""
 }
 
 resource "kubernetes_manifest" "main" {
