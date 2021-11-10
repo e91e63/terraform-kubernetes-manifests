@@ -1,11 +1,12 @@
 locals {
+  name = "${local.service_conf.name}${local.route_conf.path != null ? "-${local.route_conf.path}" : ""}}"
   route_conf = defaults(var.route_conf, {
     service_kind = "Service"
   })
+  route_path = local.route_conf.path != null ? " && Path(`/${local.route_conf.path}`)" : ""
   service_conf = defaults(var.service_conf, {
     namespace = "default"
   })
-  route_path = local.route_conf.path != null ? " && Path(`/${local.route_conf.path}`)" : ""
 }
 
 resource "kubernetes_manifest" "main" {
@@ -16,7 +17,7 @@ resource "kubernetes_manifest" "main" {
       labels = {
         "app.kubernetes.io/names" = local.service_conf.name
       }
-      name      = local.service_conf.name
+      name      = local.name
       namespace = "default"
     }
     spec = {
@@ -25,7 +26,6 @@ resource "kubernetes_manifest" "main" {
       ]
       routes = [
         {
-          # match = "Host(`${local.service_conf.name}.${var.domain_info.name}`)"
           match       = "Host(`${local.service_conf.name}.${var.domain_info.name}`)${local.route_path}"
           kind        = "Rule"
           middlewares = local.route_conf.middlewares
