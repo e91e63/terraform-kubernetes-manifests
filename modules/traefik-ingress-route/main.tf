@@ -1,5 +1,5 @@
 locals {
-  name = "${local.service_conf.name}${local.route_conf.path != null ? "-${local.route_conf.path}" : ""}}"
+  name = "${local.service_conf.name}${local.route_conf.path != null ? "-${local.route_conf.path}" : ""}"
   route_conf = defaults(var.route_conf, {
     service_kind = "Service"
   })
