@@ -6,6 +6,6 @@ locals {
 
 output "info" {
   value = {
-    route = "https://${local.domain}/${local.path}"
+    route = "https://${local.domain}${local.path}"
   }
 }
