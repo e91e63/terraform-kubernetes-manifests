@@ -1,7 +1,7 @@
 resource "kubernetes_pod" "main" {
   lifecycle {
     ignore_changes = [
-      spec.0.container.0.volume_mount
+      spec[0].container[0].volume_mount
     ]
   }
 
