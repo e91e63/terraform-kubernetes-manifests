@@ -1,16 +1,7 @@
-module "traefik_ingress_route" {
-  count  = var.route_conf.active ? 1 : 0
-  source = "../traefik-ingress-route/"
-
-  domain_info  = var.domain_info
-  route_conf   = var.route_conf
-  service_conf = var.release_conf
-}
-
 data "http" "main" {
-  count = length(var.release_conf.urls)
+  count = length(local.conf.release.urls)
 
-  url = var.release_conf.urls[count.index]
+  url = local.conf.release.urls[count.index]
 }
 
 data "kubectl_file_documents" "main" {
@@ -20,15 +11,27 @@ data "kubectl_file_documents" "main" {
 }
 
 locals {
+  conf = defaults(var.conf, {
+    route = {
+      service = {
+        name      = var.conf.release.name
+        namespace = var.conf.release.namespace
+      }
+      subdomain = var.conf.release.name
+    }
+  })
   # TODO: filter out namespaces and run those first
+  documents          = slice(local.flat_documents, 1, length(local.flat_documents))
   flat_documents     = flatten(data.kubectl_file_documents.main[*].documents)
   namespace_document = slice(local.flat_documents, 0, 1)[0]
-  documents          = slice(local.flat_documents, 1, length(local.flat_documents))
 }
 
-resource "kubectl_manifest" "namespace" {
-  wait      = true
-  yaml_body = local.namespace_document
+module "traefik_ingress_route" {
+  count  = local.conf.route != null ? 1 : 0
+  source = "../traefik/ingress-route"
+
+  conf        = local.conf.route
+  domain_info = var.domain_info
 }
 
 resource "kubectl_manifest" "main" {
@@ -39,4 +42,9 @@ resource "kubectl_manifest" "main" {
 
   wait      = true
   yaml_body = local.documents[count.index]
+}
+
+resource "kubectl_manifest" "namespace" {
+  wait      = true
+  yaml_body = local.namespace_document
 }

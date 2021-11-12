@@ -1,3 +1,6 @@
-output "route" {
-  value = var.route_conf.active ? module.traefik_ingress_route[0].info.route : "none"
+output "info" {
+  value = {
+    namespace = helm_release.main.namespace
+    url       = var.conf.route != null ? module.traefik_ingress_route[0].info.url : null
+  }
 }

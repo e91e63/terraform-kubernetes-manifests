@@ -1,3 +1,3 @@
-output "route" {
-  value = var.route_conf.active ? module.traefik_ingress_route[0].info.route : "none"
+output "url" {
+  value = local.conf.route != null ? module.traefik_ingress_route[0].info.url : null
 }

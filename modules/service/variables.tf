@@ -3,21 +3,19 @@ variable "domain_info" {
   type    = any
 }
 
-variable "service_conf" {
+variable "conf" {
   type = object({
-    container_port = string
     image          = string
     name           = string
-  })
-}
-
-variable "route_conf" {
-  default = {
-    active      = false
-    middlewares = []
-  }
-  type = object({
-    active      = bool
-    middlewares = any
+    namespace      = optional(string)
+    port_container = optional(number)
+    port_service   = optional(number)
+    route = object({
+      middlewares = list(object({
+        name      = string
+        namespace = string
+      }))
+      subdomain = optional(string)
+    })
   })
 }

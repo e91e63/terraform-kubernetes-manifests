@@ -1,35 +1,29 @@
 variable "domain_info" {
-  default = {
-    name            = null
-    tls_secret_name = null
-  }
-  type = object({
-    name            = string
-    tls_secret_name = string
-  })
+  default = {}
+  type    = any
 }
 
-variable "helm_conf" {
+variable "conf" {
   type = object({
-    chart         = string
-    chart_version = string
-    name          = string
-    namespace     = optional(string)
-    repository    = string
-    values        = any
-  })
-}
-
-variable "route_conf" {
-  default = {
-    active       = false
-    middlewares  = []
-    service_port = -1
-  }
-  type = object({
-    active       = bool
-    middlewares  = any
-    service_name = optional(string)
-    service_port = optional(number)
+    helm = object({
+      chart         = string
+      chart_version = string
+      name          = string
+      namespace     = optional(string)
+      repository    = string
+      values        = any
+    })
+    route = optional(object({
+      middlewares = list(object({
+        name      = string
+        namespace = string
+      }))
+      service = object({
+        name      = optional(string)
+        namespace = optional(string)
+        port      = optional(number)
+      })
+      subdomain = optional(string)
+    }))
   })
 }

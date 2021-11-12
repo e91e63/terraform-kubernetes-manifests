@@ -1,27 +1,32 @@
-module "traefik_ingress_route" {
-  count  = var.route_conf.active ? 1 : 0
-  source = "../traefik-ingress-route/"
-
-  domain_info = var.domain_info
-  route_conf = defaults(
-    var.route_conf,
-    {
-      service_name = var.helm_conf.name
-      service_port = 80
+locals {
+  conf = defaults(var.conf, {
+    route = {
+      service = {
+        name      = var.conf.helm.name
+        namespace = var.conf.helm.namespace
+      }
+      subdomain = var.conf.helm.name
     }
-  )
-  service_conf = var.helm_conf
+  })
+}
+
+module "traefik_ingress_route" {
+  count  = local.conf.route != null ? 1 : 0
+  source = "../traefik/ingress-route/"
+
+  conf        = local.conf.route
+  domain_info = var.domain_info
 }
 
 resource "helm_release" "main" {
-  chart      = var.helm_conf.chart
-  name       = var.helm_conf.name
-  namespace  = var.helm_conf.namespace
-  repository = var.helm_conf.repository
-  version    = var.helm_conf.chart_version
+  chart      = local.conf.helm.chart
+  name       = local.conf.helm.name
+  namespace  = local.conf.helm.namespace
+  repository = local.conf.helm.repository
+  version    = local.conf.helm.chart_version
   wait       = true
 
   values = [
-    jsonencode(var.helm_conf.values)
+    jsonencode(local.conf.helm.values)
   ]
 }

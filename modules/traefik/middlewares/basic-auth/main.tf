@@ -4,7 +4,7 @@ resource "kubernetes_manifest" "traefik_middleware" {
     apiVersion = "traefik.containo.us/v1alpha1"
     kind       = "Middleware"
     metadata = {
-      "name"      = var.basic_auth_conf.name
+      "name"      = var.conf.name
       "namespace" = "default"
     }
     spec = {
@@ -18,10 +18,10 @@ resource "kubernetes_manifest" "traefik_middleware" {
 
 resource "kubernetes_secret" "users" {
   metadata {
-    name = "traefik-basic-auth-${var.basic_auth_conf.name}"
+    name = "traefik-basic-auth-${var.conf.name}"
   }
 
   data = {
-    users = join("\n", var.basic_auth_conf.users)
+    users = join("\n", var.conf.users)
   }
 }
