@@ -13,7 +13,8 @@ locals {
   match_host = "Host(`${local.host}`)"
   match_path = local.conf.path != "" ? "Path(`${local.conf.path}`)" : ""
   match      = join(" && ", compact([local.match_host, local.match_path]))
-  uri        = join("/", compact([local.host, local.conf.path]))
+  name       = join("-", compact([local.host, local.conf.path]))
+  uri        = join("", compact([local.host, local.conf.path]))
   url        = "https://${local.uri}"
 }
 
@@ -25,7 +26,7 @@ resource "kubernetes_manifest" "main" {
       labels = {
         "app.kubernetes.io/names" = local.label
       }
-      name      = local.uri
+      name      = local.name
       namespace = "default"
     }
     spec = {
