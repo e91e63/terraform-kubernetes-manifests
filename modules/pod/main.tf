@@ -22,3 +22,13 @@ resource "kubernetes_pod" "main" {
     node_selector = {}
   }
 }
+
+terraform {
+  required_version = "~> 1"
+  required_providers {
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "~> 2"
+    }
+  }
+}

@@ -25,3 +25,13 @@ resource "kubernetes_secret" "users" {
     users = join("\n", var.conf.users)
   }
 }
+
+terraform {
+  required_providers {
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "~> 2"
+    }
+  }
+  required_version = "~> 1"
+}
