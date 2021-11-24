@@ -1,3 +1,14 @@
+terraform {
+  experiments      = [module_variable_optional_attrs]
+  required_version = "~> 1"
+  required_providers {
+    helm = {
+      source  = "hashicorp/helm"
+      version = "~> 2"
+    }
+  }
+}
+
 locals {
   conf = defaults(var.conf, {
     route = {
@@ -29,15 +40,4 @@ resource "helm_release" "main" {
   values = [
     jsonencode(local.conf.helm.values)
   ]
-}
-
-terraform {
-  experiments      = [module_variable_optional_attrs]
-  required_version = "~> 1"
-  required_providers {
-    helm = {
-      source  = "hashicorp/helm"
-      version = "~> 2"
-    }
-  }
 }

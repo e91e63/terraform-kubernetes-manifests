@@ -1,3 +1,13 @@
+terraform {
+  required_providers {
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "~> 2"
+    }
+  }
+  required_version = "~> 1"
+}
+
 locals {
   do_pat_name = "digitalocean-personal-access-token"
 }
@@ -43,14 +53,4 @@ resource "kubernetes_manifest" "cert_manager_cluster_issuer_digitalocean" {
       }
     }
   }
-}
-
-terraform {
-  required_providers {
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = "~> 2"
-    }
-  }
-  required_version = "~> 1"
 }

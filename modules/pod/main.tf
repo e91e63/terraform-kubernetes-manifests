@@ -1,3 +1,13 @@
+terraform {
+  required_version = "~> 1"
+  required_providers {
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "~> 2"
+    }
+  }
+}
+
 resource "kubernetes_pod" "main" {
   lifecycle {
     ignore_changes = [
@@ -20,15 +30,5 @@ resource "kubernetes_pod" "main" {
       name    = var.pod_conf.name
     }
     node_selector = {}
-  }
-}
-
-terraform {
-  required_version = "~> 1"
-  required_providers {
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = "~> 2"
-    }
   }
 }

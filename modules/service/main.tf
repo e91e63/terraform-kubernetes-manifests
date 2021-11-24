@@ -1,3 +1,14 @@
+terraform {
+  experiments      = [module_variable_optional_attrs]
+  required_version = "~> 1"
+  required_providers {
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "~> 2"
+    }
+  }
+}
+
 locals {
   conf = defaults(var.conf, {
     port_container = 80
@@ -81,17 +92,6 @@ resource "kubernetes_service" "main" {
     }
     selector = {
       "app.kubernetes.io/name" = local.conf.name
-    }
-  }
-}
-
-terraform {
-  experiments      = [module_variable_optional_attrs]
-  required_version = "~> 1"
-  required_providers {
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = "~> 2"
     }
   }
 }

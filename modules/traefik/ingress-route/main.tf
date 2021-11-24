@@ -1,3 +1,14 @@
+terraform {
+  experiments      = [module_variable_optional_attrs]
+  required_version = "~> 1"
+  required_providers {
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "~> 2"
+    }
+  }
+}
+
 locals {
   conf = defaults(var.conf, {
     kind = "Service"
@@ -54,17 +65,6 @@ resource "kubernetes_manifest" "main" {
       tls = {
         secretName = var.domain_info.tls_secret_name
       }
-    }
-  }
-}
-
-terraform {
-  experiments      = [module_variable_optional_attrs]
-  required_version = "~> 1"
-  required_providers {
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = "~> 2"
     }
   }
 }

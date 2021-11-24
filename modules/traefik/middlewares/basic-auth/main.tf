@@ -1,3 +1,13 @@
+terraform {
+  required_providers {
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "~> 2"
+    }
+  }
+  required_version = "~> 1"
+}
+
 # https://doc.traefik.io/traefik/middlewares/http/basicauth/
 resource "kubernetes_manifest" "traefik_middleware" {
   manifest = {
@@ -24,14 +34,4 @@ resource "kubernetes_secret" "users" {
   data = {
     users = join("\n", var.conf.users)
   }
-}
-
-terraform {
-  required_providers {
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = "~> 2"
-    }
-  }
-  required_version = "~> 1"
 }
